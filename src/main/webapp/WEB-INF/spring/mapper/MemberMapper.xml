@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tak.MemberShip.IMemberDAO">
+<insert id="memberProc" parameterType="com.tak.login.Login">
+insert into login(id,pw)
+values (#{id}, #{pw}) 
+</insert>
+
+<insert id="InsertMember" parameterType="com.tak.MemberShip.Member">
+INSERT INTO Member (id, name, email, interestedRegion, zipcode, addr1, addr2)
+VALUES (#{id}, #{name}, #{email}, #{interestedRegion},#{zipcode},#{addr1},#{addr2})
+</insert>
+
+<select id="readMember" resultType="com.tak.MemberShip.Member">
+	select * from member
+	where id=#{id}
+</select>
+
+<update id="updateMember">
+	{call
+		declare
+		begin
+			update login set pw = #{pw} where id= #{id};
+			update member set name=#{name}, email=#{email}, interestedRegion=#{interestedRegion}, zipcode=#{zipcode}, addr1=#{addr1},addr2=#{addr2} where id=#{id};
+		end
+	}
+</update>
+
+<delete id="deleteMember">
+	{call
+		declare
+		begin
+			delete from member where id=#{id};
+			delete from login where id =#{id};
+		end
+	}
+</delete>
+<update id="updatePw">
+	update login set pw = #{pw} where id = #{id}
+</update>
+<select id="readMemberByEmail" resultType="com.tak.MemberShip.Member">
+select * from member
+where email=#{email}
+</select>
+<select id="countEmail" resultType="int" parameterType="String">
+select count(*)
+from member
+where email=#{email}
+</select>
+
+</mapper>

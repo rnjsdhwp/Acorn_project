@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oje.review.IReviewDAO">
+	<select id="ReadReview" resultType="com.oje.review.Review" parameterType="map">
+		SELECT ROWNUM as rnum, no, id, title, content, writedate, hit
+		FROM(
+			SELECT ROWNUM as rnum, no, id, title, content, writedate, hit
+			FROM(
+				SELECT LEVEL, no, LPAD('↳', 4*(LEVEL-1))||title as title,
+				id, content, writedate, hit, pno, depth, ROWNUM AS rnum
+				FROM(
+					SELECT r.no, writedate, title,
+					content, id, nvl(readno, 0) as hit,
+					nvl(pno, 0) as pno, nvl(depth, 0) as depth
+					FROM travel_review r
+					LEFT JOIN travel_hits h
+					ON r.no = h.no
+					LEFT JOIN travel_reply rp
+					ON r.no=rp.no
+				)
+				START WITH pno=0
+				CONNECT BY PRIOR no=pno
+				ORDER SIBLINGS BY no desc
+			)
+			<if test="sortOp=='hits'">
+				START WITH pno=0
+			    CONNECT BY PRIOR no=pno
+			    ORDER SIBLINGS BY hit desc    
+			</if>
+		)
+		<![CDATA[WHERE rnum>=#{start} AND rnum<=#{end}]]>
+	</select>
+	
+	<select id="ReadReviewAll" resultType="com.oje.review.Review" parameterType="map">
+		SELECT no, id, title, content, writedate, hit
+		FROM(
+			SELECT no, id, title, content, writedate, hit, ROWNUM as rnum
+	   		FROM(
+				SELECT no, id, title, content, writedate, hit,  pno
+				FROM(
+					SELECT LEVEL, no, LPAD('↳', 4*(LEVEL-1))||title as title,
+					id, content, writedate, hit, pno, depth, ROWNUM AS rnum
+					FROM(
+						SELECT r.no, writedate, title,
+						content, id, nvl(readno, 0) as hit,
+						nvl(pno, 0) as pno, nvl(depth, 0) as depth
+						FROM travel_review r
+						LEFT JOIN travel_hits h
+						ON r.no = h.no
+						LEFT JOIN travel_reply rp
+						ON r.no=rp.no
+					)
+					START WITH pno=0
+					CONNECT BY PRIOR no=pno
+					ORDER SIBLINGS BY no desc
+				)
+				WHERE TITLE LIKE '%'||#{search}||'%'
+				OR ID LIKE '%'||#{search}||'%'
+			)
+			<if test="sortOp=='hits'">
+				START WITH pno=0
+			    CONNECT BY PRIOR no=pno
+			    ORDER SIBLINGS BY hit desc    
+			</if>
+		)
+		<![CDATA[WHERE rnum>=#{start} AND rnum<=#{end}]]>
+	</select>
+	
+	<select id="ReadReviewTitle" resultType="com.oje.review.Review" parameterType="map">
+		SELECT no, id, title, content, writedate, hit
+		FROM(
+			SELECT no, id, title, content, writedate, hit, ROWNUM as rnum
+	   		FROM(
+				SELECT no, id, title, content, writedate, hit, pno
+				FROM(
+					SELECT LEVEL, no, LPAD('↳', 4*(LEVEL-1))||title as title,
+					id, content, writedate, hit, pno, depth, ROWNUM AS rnum
+					FROM(
+						SELECT r.no, writedate, title,
+						content, id, nvl(readno, 0) as hit,
+						nvl(pno, 0) as pno, nvl(depth, 0) as depth
+						FROM travel_review r
+						LEFT JOIN travel_hits h
+						ON r.no = h.no
+						LEFT JOIN travel_reply rp
+						ON r.no=rp.no
+					)
+					START WITH pno=0
+					CONNECT BY PRIOR no=pno
+					ORDER SIBLINGS BY no desc
+				)
+				WHERE TITLE LIKE '%'||#{search}||'%'
+			)
+			<if test="sortOp=='hits'">
+				START WITH pno=0
+			    CONNECT BY PRIOR no=pno
+			    ORDER SIBLINGS BY hit desc    
+			</if>
+		)
+		<![CDATA[WHERE rnum>=#{start} AND rnum<=#{end}]]>
+	</select>
+
+	<select id="ReadReviewId" resultType="com.oje.review.Review" parameterType="map">
+		SELECT no, id, title, content, writedate, hit, rnum
+		FROM(
+			SELECT no, id, title, content, writedate, hit, ROWNUM as rnum
+	   		FROM(
+				SELECT no, id, title, content, writedate, hit,  pno
+				FROM(
+					SELECT LEVEL, no, LPAD('↳', 4*(LEVEL-1))||title as title,
+					id, content, writedate, hit, pno, depth, ROWNUM AS rnum
+					FROM(
+						SELECT r.no, writedate, title,
+						content, id, nvl(readno, 0) as hit,
+						nvl(pno, 0) as pno, nvl(depth, 0) as depth
+						FROM travel_review r
+						LEFT JOIN travel_hits h
+						ON r.no = h.no
+						LEFT JOIN travel_reply rp
+						ON r.no=rp.no
+					)
+					START WITH pno=0
+					CONNECT BY PRIOR no=pno
+					ORDER SIBLINGS BY no desc
+				)
+				WHERE ID LIKE '%'||#{search}||'%'
+			)
+			<if test="sortOp=='hits'">
+				START WITH pno=0
+			    CONNECT BY PRIOR no=pno
+			    ORDER SIBLINGS BY hit desc    
+			</if>
+		)
+		<![CDATA[WHERE rnum>=#{start} AND rnum<=#{end}]]>
+	</select>
+	
+	<insert id="writeProc" parameterType="com.oje.review.Review">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			SELECT nvl(max(no), 0)+1 FROM travel_review
+		</selectKey>
+		INSERT INTO travel_review(no, id, title, content, writeDate)
+		VALUES (#{no}, #{id}, #{title}, #{content}, #{writedate})
+	</insert>
+	
+	<insert id="AttachFile" parameterType="map">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			SELECT nvl(max(no), 0)+1 FROM travel_attachFile
+		</selectKey>
+			INSERT INTO travel_attachFile(no, systemFile, originFile, fno)
+			VALUES (#{no}, #{systemFile}, #{originFile}, #{fno})
+	</insert>
+	
+	<select id="DetailRead" resultType="com.oje.review.Review" parameterType="String">
+		select * from travel_review
+		where no=${writeNo}
+	</select>
+	
+	<select id="DetailReadAttach" resultType="map" parameterType="String">
+		select systemFile, originFile from travel_attachFile
+		where fno=#{writeNo}
+	</select>
+	
+	<insert id="Hits" parameterType="map">
+		<selectKey keyProperty="readNo" resultType="int" order="BEFORE">
+			SELECT nvl(max(readNo), 0)+1 FROM travel_hits
+			WHERE no=#{no}
+		</selectKey>
+		<choose>
+			<when test="readNo==1">
+				INSERT INTO travel_hits(no, readNo)
+				VALUES(#{no}, #{readNo})
+			</when>
+			<otherwise>
+				UPDATE travel_hits
+				SET readNo=#{readNo}
+				WHERE no=#{no}
+			</otherwise>		
+		</choose>
+	</insert>
+	
+	<insert id="InsertReply" parameterType="map">
+		<selectKey keyProperty="depth" resultType="int" order="BEFORE">
+			select nvl(max(depth), 0)+1 as depth
+			from travel_reply
+			where no=#{pno}
+		</selectKey>
+		insert into travel_reply
+		values(#{no}, #{pno}, #{depth})
+	</insert>
+	
+	<update id="updateReview" parameterType="com.oje.review.Review">
+		UPDATE travel_review 
+		SET TITLE=#{title}, CONTENT=#{content}, WRITEDATE=#{writedate}
+		WHERE NO=#{no}
+	</update>
+	
+	<delete id="deleteReview" parameterType="int">
+		DELETE FROM travel_review
+		WHERE no=#{pno}
+	</delete>
+	
+	<select id="reviewCnt" resultType="int" parameterType="String">
+		SELECT COUNT(*) from travel_review 
+		WHERE TITLE LIKE '%'||#{search}||'%' 
+		OR ID LIKE '%'||#{search}||'%'
+	</select>
+	
+	<select id="reviewTitleCnt" resultType="int" parameterType="String">
+		SELECT COUNT(*) from travel_review 
+		WHERE TITLE LIKE '%'||#{search}||'%' 
+	</select>
+	
+	<select id="reviewIdCnt" resultType="int" parameterType="String">
+		SELECT COUNT(*) from travel_review 
+		WHERE ID LIKE '%'||#{search}||'%'
+	</select>
+</mapper>

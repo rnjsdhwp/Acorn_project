@@ -1,0 +1,130 @@
+@charset "UTF-8";
+header{
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+header > div > h1 {
+    float: left;
+}
+header > div > .home-menu {
+    float: right;
+}
+div{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+header > div > .home-menu > .serach-inner {
+    float: left;
+    position: relative;
+    margin-right: 38px;
+    border-bottom: 2px solid #ff6353;
+    z-index: 9;
+}
+form{
+    margin: 0;
+    padding: 0;
+}
+footer address, header > div > .home-menu > .serach-inner input {
+    box-sizing: border-box;
+}
+header > div > .home-menu > .serach-inner input {
+    width: 273px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 12px;
+    font-family: 'dotum';
+    padding-left: 10px;
+    border: 0;
+}
+header > div > .home-menu > .serach-inner button {
+    position: absolute;
+    right: 0;
+    top: 35%;
+    margin-top: -11.5px;
+}
+header > nav {
+    position: relative;
+    clear: both;
+    width: 100%;
+    height: 50px;
+    background-color: #313131;
+    z-index: 3;
+    box-shadow: 0px 3px 10px 0px rgb(50 50 50 / 50%);
+}
+nav{
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+header > div, header > nav > div > ul, .sitemap > ul, footer address, #sub-content {
+    width: 100%;
+    padding: 0 1em;
+}
+header > nav > div > ul {
+    width: 1170px;
+    margin: 0 auto;
+}
+ul{
+    box-sizing: border-box;
+}
+ul, ol, li {
+    list-style: none;
+}
+header > nav > div > ul > li {
+    float: left;
+    width: 14.285714285%;
+}
+body, div, p, h1, h2, h3, h4, h5, h6, ul, ol, li, dl, dt, dd, table, tr, th, td, caption, form, fieldset, input, select, textarea, blockquote, address, button {
+    margin: 0;
+    padding: 0;
+}
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+header > nav > div > ul > li > a {
+    display: block;
+    text-align: center;
+    position: relative;
+}
+a, a:hover, a:focus {
+    text-decoration: none;
+    outline: none;
+    letter-spacing: -0.01em;
+    color: #555;
+}
+a {
+    background-color: transparent;
+}
+header > nav > div > ul > li > a > span {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+}
+header > nav > div > ul > li > a {
+    display: block;
+    text-align: center;
+    position: relative;
+}
+header > nav > div > ul > li > a.before:before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 13px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -7.5px;
+}
+#top{
+	width:660px;
+	margin:0 auto;
+}

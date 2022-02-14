@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	<mvc:annotation-driven/>
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	 <bean
+	class="org.apache.commons.dbcp2.BasicDataSource"
+	id="dataSource"
+	p:driverClassName="oracle.jdbc.OracleDriver"
+	p:url="DB URL"
+	p:username="DB ID"
+	p:password="DB PW"
+	/>
+	
+	<bean
+	class="org.mybatis.spring.SqlSessionFactoryBean"
+	id="sqlSessionFactoryBean"
+	p:dataSource-ref="dataSource"
+	p:mapperLocations="/WEB-INF/spring/mapper/*.xml"
+	/>
+	
+	<bean
+	class="org.mybatis.spring.mapper.MapperFactoryBean"
+	id="mapperFactoryBean1"
+	p:mapperInterface="com.tak.MemberShip.IMemberDAO"
+	p:sqlSessionFactory-ref="sqlSessionFactoryBean"
+	/>
+	<bean
+	class="org.mybatis.spring.mapper.MapperFactoryBean"
+	id="loginmapperFactoryBean"
+	p:mapperInterface="com.tak.login.ILoginDAO"
+	p:sqlSessionFactory-ref="sqlSessionFactoryBean"
+	/>  
+	<!-- navermail설정 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+	 <property name="host" value="smtp.gmail.com"/> <!-- 메이서버 호스트 -->
+	 <property name="port" value="587"/> <!-- 메이서버 포트번호 -->
+	 <property name="username" value="EMAIL"/> <!-- 자신의 이메일 아이디 -->
+	 <property name="password" value="PW"/> <!-- 자신의 비밀번호 -->
+	   <!-- 보안연결 SSL과 관련된 설정 -->
+	 <property name="javaMailProperties">
+	   <props>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.auth">true    </prop>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.debug">true</prop>
+                <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+                <prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+            </props>
+	 </property>
+	</bean>
+	
+	
+	<bean
+	class="org.mybatis.spring.mapper.MapperFactoryBean"
+	id="mapperFactoryBean"
+	p:mapperInterface="com.kr.Region.IRegionDAO"
+	p:sqlSessionFactory-ref="sqlSessionFactoryBean"
+	/>
+	
+	<bean
+	class="org.mybatis.spring.mapper.MapperFactoryBean"
+	id="ThemaMapperFactoryBean"
+	p:mapperInterface="com.kr.Thema.IThemaDAO"
+	p:sqlSessionFactory-ref="sqlSessionFactoryBean"
+	/>
+	<bean
+	class="org.mybatis.spring.mapper.MapperFactoryBean"
+	id="reviewFactoryBean"
+	p:mapperInterface="com.oje.review.IReviewDAO"
+	p:sqlSessionFactory-ref="sqlSessionFactoryBean"
+	/>
+	<bean 
+	class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+	id="multipartResolver"
+	p:maxInMemorySize="100000000"
+	p:maxUploadSize="100000000"/>
+
+	<bean
+		class="org.mybatis.spring.mapper.MapperFactoryBean"
+		id="searchmapperFactoryBean"
+		p:mapperInterface="com.jin.travel.ISearchDAO"
+		p:sqlSessionFactory-ref="sqlSessionFactoryBean"
+		/>  
+</beans>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kr.Region.IRegionDAO">
+<select id="selectDetail" parameterType="String" resultType="com.jin.travel.Detail">
+SELECT * from detail 
+WHERE title = '${title}'
+</select>
+<select id="selectDetailLst" parameterType="String" resultType="com.jin.travel.Detail">
+SELECT * from detail 
+WHERE location like '%${gangnam}%'
+</select>
+</mapper>
+
+
+
+
+
+
